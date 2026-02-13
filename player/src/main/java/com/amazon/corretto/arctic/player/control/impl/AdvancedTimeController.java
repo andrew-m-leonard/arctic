@@ -83,7 +83,7 @@ public final class AdvancedTimeController implements TimeController, ArcticTweak
 
             if (runningTest.getTimings().getMinWaitNs() == 0) {
                 // getMinWaitNs() is 0, so map toWait negative or 0 values to 1ms
-                toWait = Math.max(toWait, 1);
+                toWait = Math.max(toWait, 1000000);
             }
             waitFor(toWait / 1000000);
         }
