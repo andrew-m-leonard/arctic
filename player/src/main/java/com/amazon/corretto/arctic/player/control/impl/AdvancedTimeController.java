@@ -77,12 +77,14 @@ public final class AdvancedTimeController implements TimeController, ArcticTweak
         }
         if (toWait > runningTest.getTimings().getMinWaitNs() || runningTest.getTimings().getMinWaitNs() == 0) {
             // MinWaitNs has additional meaning for a value of 0, so as to be able to force a Thread yield
-            // and always perform a wait even if for 0ms. This allows for awt/jnh event processing to consume
+            // and always perform a wait for 1ms. This allows for awt/jnh event processing to consume
             // events to help prevent the queue being overwelmed and resulting in a hang
             // Ref: https://github.com/corretto/arctic/issues/14
 
-            // Map negative toWait values to 0
-            toWait = Math.max(toWait, 0);
+            if (runningTest.getTimings().getMinWaitNs() == 0) {
+                // getMinWaitNs() is 0, so map toWait negative or 0 values to 1ms
+                toWait = Math.max(toWait, 1);
+            }
             waitFor(toWait / 1000000);
         }
         lastEventTs = nextEvent.getTimestamp();
