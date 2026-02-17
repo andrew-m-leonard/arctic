@@ -119,7 +119,7 @@ public class ShadeManager {
      */
     private void spawnShade(boolean useInvisible) {
         if (useInvisible) {
-            // Use an existing invisible shade if one apresent, else create a new one
+            // Use an existing invisible shade if one present, else create a new one
             if (SwingUtilities.isEventDispatchThread()) {
                 shades.stream().filter(it -> !it.isVisible()).findAny().orElseGet(this::createShade).setVisible(true);
             } else {
