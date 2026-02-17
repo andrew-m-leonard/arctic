@@ -75,15 +75,14 @@ public final class AdvancedTimeController implements TimeController, ArcticTweak
             // As of 2022-06-27 there is a bug on the recordings, they have the time in ms, not ns
             toWait = Math.min(toWait, runningTest.getTimings().getMaxWaitNs() * 1000000);
         }
-        if (toWait > runningTest.getTimings().getMinWaitNs() || runningTest.getTimings().getMinWaitNs() == 0) {
-            // MinWaitNs has additional meaning for a value of 0, so as to be able to force a Thread yield
-            // and always perform a wait for 1ms. This allows for awt/jnh event processing to consume
+        if (toWait > runningTest.getTimings().getMinWaitNs() || runningTest.getTimings().getMinWaitFloorMs() > -1) {
+            // If set, MinWaitFloorMs sets the lower floor for waiting.
+            // This allows for awt/jnh event processing to consume
             // events to help prevent the queue being overwelmed and resulting in a hang
             // Ref: https://github.com/corretto/arctic/issues/14
 
-            if (runningTest.getTimings().getMinWaitNs() == 0) {
-                // getMinWaitNs() is 0, so map toWait negative or 0 values to 1ms
-                toWait = Math.max(toWait, 1000000);
+            if (runningTest.getTimings().getMinWaitFloorMs() > -1) {
+                toWait = Math.max(toWait, runningTest.getTimings().getMinWaitFloorMs() * 1000000);
             }
             waitFor(toWait / 1000000);
         }
